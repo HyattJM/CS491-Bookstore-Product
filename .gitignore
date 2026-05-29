@@ -1,0 +1,27 @@
+# Target build outputs
+**/target/
+**/build/
+**/.gradle/
+
+# IDE settings and metadata
+**/.idea/
+**/.vscode/
+**/*.iml
+**/*.suo
+**/*.ntvs*
+**/*.njsproj
+**/*.sln
+**/*.sw?
+
+# Node/Frontend local environments
+**/node_modules/
+**/.pnpm-store/
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# OS specific files
+**/.DS_Store
+**/Thumbs.db
