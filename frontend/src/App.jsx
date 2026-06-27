@@ -55,17 +55,17 @@ function App() {
       <div className="app-container">
         {user && (
           <nav className="navbar">
-            <img 
-              src="/logo.png" 
-              alt="Rare Finds Bookstore" 
-              style={{ 
-                height: '60px', 
-                objectFit: 'cover', 
-                background: 'white', 
-                padding: '0', 
-                borderRadius: '4px' 
-              }} 
-            />
+            <div style={{ height: '60px', width: '250px', overflow: 'hidden', background: 'white', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img 
+                src="/logo.png" 
+                alt="Rare Finds Bookstore" 
+                style={{ 
+                  width: '100%',
+                  objectFit: 'contain', 
+                  transform: 'scale(1.8)'
+                }} 
+              />
+            </div>
             <div>
               <span style={{ marginRight: '1rem', color: 'var(--text-secondary)' }}>
                 Welcome, {user.username} ({user.role})

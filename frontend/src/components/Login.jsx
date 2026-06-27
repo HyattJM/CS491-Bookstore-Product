@@ -34,19 +34,24 @@ const Login = ({ onLogin }) => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        <div style={{ 
+          textAlign: 'center', 
+          marginBottom: '1.5rem', 
+          width: '100%', 
+          height: '120px', 
+          overflow: 'hidden', 
+          background: 'white', 
+          borderRadius: '8px', 
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)' 
+        }}>
           <img 
             src="/logo.png" 
             alt="Rare Finds Bookstore" 
             style={{ 
               width: '100%', 
-              height: '140px',
-              background: 'white', 
-              padding: '0',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-              objectFit: 'cover',
-              objectPosition: 'center'
+              height: '100%',
+              objectFit: 'contain',
+              transform: 'scale(1.8)'
             }} 
           />
         </div>
