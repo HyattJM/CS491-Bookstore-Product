@@ -313,61 +313,53 @@ const Dashboard = ({ user }) => {
         <button className="btn btn-primary" onClick={() => fetchBooks(searchQuery)}>Search</button>
       </div>
 
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {books.map(book => (
-            <tr key={book.id}>
-              <td>{book.id}</td>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
-              <td>{book.genre}</td>
-              <td>${book.price.toFixed(2)}</td>
-              <td>
-                <span style={{ 
-                  color: book.quantity < 5 ? 'var(--danger)' : 'var(--text-primary)',
-                  fontWeight: book.quantity < 5 ? 'bold' : 'normal'
-                }}>
-                  {book.quantity}
+      <div className="books-grid">
+        {books.map(book => (
+          <div key={book.id} className="book-card">
+            <img 
+              src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`} 
+              alt={book.title} 
+              className="book-cover"
+              onError={(e) => {
+                e.target.onerror = null; 
+                e.target.src = 'https://via.placeholder.com/280x400/1e293b/f8fafc?text=No+Cover';
+              }}
+            />
+            <div className="book-info">
+              <div className="book-title">{book.title}</div>
+              <div className="book-author">by {book.author}</div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1rem' }}>Genre: {book.genre}</div>
+              
+              <div className="book-meta">
+                <span className="book-price">${book.price.toFixed(2)}</span>
+                <span className={`book-qty ${book.quantity === 0 ? 'out-of-stock' : ''}`}>
+                  {book.quantity === 0 ? 'Out of Stock' : `${book.quantity} in stock`}
                 </span>
-              </td>
-              <td>
-                <button 
-                  className="btn btn-primary" 
-                  style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem', fontSize: '0.875rem' }}
-                  onClick={() => addToCart(book)}
-                  disabled={book.quantity === 0}
-                >
-                  {book.quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
-                </button>
-                {['ADMIN', 'MANAGER'].includes(user.role) && (
-                  <button className="btn btn-secondary" onClick={() => openEditModal(book)} style={{ padding: '0.25rem 0.5rem', marginRight: '0.5rem', fontSize: '0.875rem' }}>Edit</button>
-                )}
-                {['ADMIN'].includes(user.role) && (
-                  <button className="btn btn-danger" style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}>Delete</button>
-                )}
-              </td>
-            </tr>
-          ))}
-          {books.length === 0 && !loading && (
-            <tr>
-              <td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>
-                {hasSearched ? `No results found for '${searchQuery}' in ${filterBy}` : 'No books in inventory'}
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+              </div>
+            </div>
+            <div className="book-actions">
+              <button 
+                className="btn btn-primary" 
+                onClick={() => addToCart(book)}
+                disabled={book.quantity === 0}
+              >
+                Add to Cart
+              </button>
+              {['ADMIN', 'MANAGER'].includes(user.role) && (
+                <button className="btn btn-secondary" onClick={() => openEditModal(book)}>Edit</button>
+              )}
+              {['ADMIN'].includes(user.role) && (
+                <button className="btn btn-danger">Delete</button>
+              )}
+            </div>
+          </div>
+        ))}
+        {books.length === 0 && !loading && (
+          <div style={{ textAlign: 'center', padding: '3rem', gridColumn: '1 / -1', color: 'var(--text-secondary)' }}>
+            {hasSearched ? `No results found for '${searchQuery}' in ${filterBy}` : 'No books in inventory'}
+          </div>
+        )}
+      </div>
 
       {/* Cart Side Panel */}
       <div className={`cart-overlay ${isCartOpen ? 'open' : ''}`} onClick={() => setIsCartOpen(false)}></div>
