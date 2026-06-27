@@ -186,7 +186,7 @@ const Dashboard = ({ user }) => {
                 // Immediately trigger search when a price range is selected
                 fetchBooks(e.target.value);
               }}
-              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--surface)', color: 'var(--text-primary)' }}
             >
               <option value="">Select Price Range...</option>
               <option value="1-100">$1 - $100</option>
@@ -211,7 +211,7 @@ const Dashboard = ({ user }) => {
                   fetchBooks();
                 }
               }}
-              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--surface)', color: 'var(--text-primary)' }}
             />
           )}
           {filterBy !== 'price' && showSuggestions && suggestions.length > 0 && (
@@ -254,7 +254,7 @@ const Dashboard = ({ user }) => {
             setFilterBy(e.target.value);
             setSearchQuery(''); // Reset search query when changing filter
           }}
-          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+          style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--surface)', color: 'var(--text-primary)' }}
         >
           <option value="title">Title</option>
           <option value="author">Author</option>
