@@ -34,6 +34,19 @@ const Login = ({ onLogin }) => {
   return (
     <div className="login-container">
       <div className="login-card">
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <img 
+            src="/logo.png" 
+            alt="Rare Finds Bookstore" 
+            style={{ 
+              maxWidth: '200px', 
+              background: 'white', 
+              padding: '1rem', 
+              borderRadius: '8px',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+            }} 
+          />
+        </div>
         <h2>Sign In</h2>
         {error && <div style={{ color: 'var(--danger)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
         <form onSubmit={handleSubmit}>

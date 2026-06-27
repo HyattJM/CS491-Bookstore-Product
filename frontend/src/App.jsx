@@ -55,7 +55,17 @@ function App() {
       <div className="app-container">
         {user && (
           <nav className="navbar">
-            <h1>Rare Finds BMS</h1>
+            <img 
+              src="/logo.png" 
+              alt="Rare Finds Bookstore" 
+              style={{ 
+                height: '40px', 
+                objectFit: 'contain', 
+                background: 'white', 
+                padding: '0.25rem 0.5rem', 
+                borderRadius: '4px' 
+              }} 
+            />
             <div>
               <span style={{ marginRight: '1rem', color: 'var(--text-secondary)' }}>
                 Welcome, {user.username} ({user.role})
