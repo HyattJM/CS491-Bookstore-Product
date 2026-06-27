@@ -11,7 +11,7 @@ const BookCover = ({ isbn, title }) => {
       return;
     }
     
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`)
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}`)
       .then(res => res.json())
       .then(data => {
         if (isMounted) {
@@ -19,6 +19,7 @@ const BookCover = ({ isbn, title }) => {
             let url = data.items[0].volumeInfo.imageLinks.thumbnail;
             if (url) {
               url = url.replace('http:', 'https:').replace('&edge=curl', '');
+              // Try to get higher res if possible by replacing zoom=1 with zoom=2 or just removing it, but thumbnail is okay
             }
             setCoverUrl(url);
           }
@@ -30,16 +31,18 @@ const BookCover = ({ isbn, title }) => {
       });
       
     return () => { isMounted = false; };
-  }, [isbn]);
+  }, [title]);
 
   if (loading) {
     return <div className="book-cover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface-hover)' }}>Loading...</div>;
   }
 
   if (!coverUrl) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="280" height="400"><rect width="280" height="400" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#f8fafc">No Cover</text></svg>`;
+    const dataUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
     return (
       <img 
-        src={`https://via.placeholder.com/280x400/1e293b/f8fafc?text=No+Cover`} 
+        src={dataUrl} 
         alt={title} 
         className="book-cover"
       />
