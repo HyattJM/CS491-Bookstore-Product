@@ -36,6 +36,22 @@ public class BookController {
         return switch (filterBy.toLowerCase()) {
             case "author" -> bookRepository.findByAuthorContainingIgnoreCase(query);
             case "genre" -> bookRepository.findByGenreContainingIgnoreCase(query);
+            case "price" -> {
+                try {
+                    if (query.endsWith("+")) {
+                        java.math.BigDecimal min = new java.math.BigDecimal(query.replace("+", "").trim());
+                        yield bookRepository.findByPriceGreaterThanEqual(min);
+                    } else if (query.contains("-")) {
+                        String[] parts = query.split("-");
+                        java.math.BigDecimal min = new java.math.BigDecimal(parts[0].trim());
+                        java.math.BigDecimal max = new java.math.BigDecimal(parts[1].trim());
+                        yield bookRepository.findByPriceBetween(min, max);
+                    }
+                } catch (Exception e) {
+                    // Ignore parse errors, return all or empty
+                }
+                yield bookRepository.findAll();
+            }
             default -> bookRepository.findByTitleContainingIgnoreCase(query);
         };
     }

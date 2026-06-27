@@ -178,25 +178,43 @@ const Dashboard = ({ user }) => {
 
       <div className="search-bar" style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', position: 'relative' }}>
         <div style={{ flex: 1, position: 'relative' }}>
-          <input 
-            type="text" 
-            placeholder={`Search by ${filterBy}...`} 
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowSuggestions(true);
-            }}
-            onFocus={() => setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                setShowSuggestions(false);
-                fetchBooks();
-              }
-            }}
-            style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
-          />
-          {showSuggestions && suggestions.length > 0 && (
+          {filterBy === 'price' ? (
+            <select
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                // Immediately trigger search when a price range is selected
+                fetchBooks(e.target.value);
+              }}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+            >
+              <option value="">Select Price Range...</option>
+              <option value="1-100">$1 - $100</option>
+              <option value="100-250">$100 - $250</option>
+              <option value="250-500">$250 - $500</option>
+              <option value="500+">$500+</option>
+            </select>
+          ) : (
+            <input 
+              type="text" 
+              placeholder={`Search by ${filterBy}...`} 
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowSuggestions(true);
+              }}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setShowSuggestions(false);
+                  fetchBooks();
+                }
+              }}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+            />
+          )}
+          {filterBy !== 'price' && showSuggestions && suggestions.length > 0 && (
             <ul style={{
               position: 'absolute',
               top: '100%',
@@ -232,12 +250,16 @@ const Dashboard = ({ user }) => {
         </div>
         <select 
           value={filterBy} 
-          onChange={(e) => setFilterBy(e.target.value)}
+          onChange={(e) => {
+            setFilterBy(e.target.value);
+            setSearchQuery(''); // Reset search query when changing filter
+          }}
           style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
         >
           <option value="title">Title</option>
           <option value="author">Author</option>
           <option value="genre">Genre</option>
+          <option value="price">Price Range</option>
         </select>
         <button className="btn btn-primary" onClick={() => fetchBooks(searchQuery)}>Search</button>
       </div>
