@@ -3,10 +3,25 @@ import React, { useState, useEffect } from 'react';
 const BookCover = ({ isbn, title }) => {
   const [coverUrl, setCoverUrl] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const coverRef = React.useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setIsVisible(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: '100px' });
+    
+    if (coverRef.current) observer.observe(coverRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
-    if (!isbn) {
+    if (!isVisible) return;
+    if (!title) {
       setLoading(false);
       return;
     }
@@ -17,10 +32,7 @@ const BookCover = ({ isbn, title }) => {
         if (isMounted) {
           if (data.items && data.items.length > 0 && data.items[0].volumeInfo.imageLinks) {
             let url = data.items[0].volumeInfo.imageLinks.thumbnail;
-            if (url) {
-              url = url.replace('http:', 'https:').replace('&edge=curl', '');
-              // Try to get higher res if possible by replacing zoom=1 with zoom=2 or just removing it, but thumbnail is okay
-            }
+            if (url) url = url.replace('http:', 'https:').replace('&edge=curl', '');
             setCoverUrl(url);
           }
           setLoading(false);
@@ -31,25 +43,24 @@ const BookCover = ({ isbn, title }) => {
       });
       
     return () => { isMounted = false; };
-  }, [title]);
+  }, [title, isVisible]);
 
-  if (loading) {
-    return <div className="book-cover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface-hover)' }}>Loading...</div>;
-  }
+  const fallbackSvg = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="280" height="400"><rect width="280" height="400" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#f8fafc">No Cover</text></svg>`)}`;
 
-  if (!coverUrl) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="280" height="400"><rect width="280" height="400" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#f8fafc">No Cover</text></svg>`;
-    const dataUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
-    return (
-      <img 
-        src={dataUrl} 
-        alt={title} 
-        className="book-cover"
-      />
-    );
-  }
-
-  return <img src={coverUrl} alt={title} className="book-cover" />;
+  return (
+    <div ref={coverRef} style={{ minHeight: '400px', width: '100%', display: 'flex' }}>
+      {loading ? (
+        <div className="book-cover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface-hover)', flex: 1 }}>Loading...</div>
+      ) : (
+        <img 
+          src={coverUrl || fallbackSvg} 
+          alt={title} 
+          className="book-cover"
+          style={{ flex: 1 }}
+        />
+      )}
+    </div>
+  );
 };
 
 const Dashboard = ({ user }) => {
