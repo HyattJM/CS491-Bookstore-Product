@@ -1,6 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import * as ReactCardFlipModule from 'react-card-flip';
-const ReactCardFlip = ReactCardFlipModule.default ? ReactCardFlipModule.default : ReactCardFlipModule;
+
+const NativeFlipCard = ({ isFlipped, front, back }) => {
+  return (
+    <div style={{ width: '100%', height: '100%', perspective: '1000px' }}>
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+        transformStyle: 'preserve-3d',
+        transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+      }}>
+        <div style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+          top: 0,
+          left: 0
+        }}>
+          {front}
+        </div>
+        <div style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+          transform: 'rotateY(180deg)',
+          top: 0,
+          left: 0
+        }}>
+          {back}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const BookCover = ({ isbn, title, author }) => {
   const [coverUrl, setCoverUrl] = useState(null);
@@ -30,7 +67,6 @@ const BookCover = ({ isbn, title, author }) => {
       return;
     }
     
-    // Using iTunes API which is much more resilient to rate limits than Google Books
     const term = encodeURIComponent(`${title} ${author}`);
     fetch(`https://itunes.apple.com/search?term=${term}&media=ebook&limit=1`)
       .then(res => res.json())
@@ -38,7 +74,6 @@ const BookCover = ({ isbn, title, author }) => {
         if (isMounted) {
           if (data.results && data.results.length > 0) {
             if (data.results[0].artworkUrl100) {
-              // Apple provides 100x100 thumbnails, we can request a larger size by replacing the dimensions in the URL
               let url = data.results[0].artworkUrl100.replace('100x100bb', '400x400bb');
               setCoverUrl(url);
             }
@@ -58,51 +93,53 @@ const BookCover = ({ isbn, title, author }) => {
 
   const fallbackSvg = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="280" height="400"><rect width="280" height="400" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#f8fafc">No Cover</text></svg>`)}`;
 
+  const frontContent = (
+    <div style={{ minHeight: '400px', height: '100%', display: 'flex' }}>
+      {loading ? (
+        <div className="book-cover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface-hover)', flex: 1, height: '100%' }}>Loading...</div>
+      ) : (
+        <img 
+          src={coverUrl || fallbackSvg} 
+          alt={title} 
+          className="book-cover"
+          style={{ flex: 1, objectFit: 'cover', height: '100%', borderBottom: '1px solid var(--border-color)' }}
+        />
+      )}
+    </div>
+  );
+
+  const backContent = (
+    <div 
+      style={{ 
+        minHeight: '400px', 
+        height: '400px',
+        overflowY: 'auto', 
+        backgroundColor: 'var(--surface-hover)',
+        padding: '1.5rem',
+        borderBottom: '1px solid var(--border-color)',
+        color: 'var(--text-primary)',
+        fontSize: '0.95rem',
+        lineHeight: '1.6'
+      }}
+      className="book-synopsis-back"
+    >
+      <h4 style={{marginTop: 0, marginBottom: '0.5rem', color: 'var(--primary)'}}>Synopsis</h4>
+      {synopsis ? (
+        <div dangerouslySetInnerHTML={{ __html: synopsis }} />
+      ) : (
+        <p style={{ color: 'var(--text-secondary)' }}>No synopsis available.</p>
+      )}
+    </div>
+  );
+
   return (
     <div 
       ref={coverRef} 
-      style={{ width: '100%' }} 
+      style={{ width: '100%', height: '400px' }} 
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
-      <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-        {[
-          <div key="front" style={{ minHeight: '400px', display: 'flex' }}>
-            {loading ? (
-              <div className="book-cover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface-hover)', flex: 1, height: '100%' }}>Loading...</div>
-            ) : (
-              <img 
-                src={coverUrl || fallbackSvg} 
-                alt={title} 
-                className="book-cover"
-                style={{ flex: 1, objectFit: 'cover', height: '100%', borderBottom: '1px solid var(--border-color)' }}
-              />
-            )}
-          </div>,
-          <div 
-            key="back"
-            style={{ 
-              minHeight: '400px', 
-              height: '400px',
-              overflowY: 'auto', 
-              backgroundColor: 'var(--surface-hover)',
-              padding: '1.5rem',
-              borderBottom: '1px solid var(--border-color)',
-              color: 'var(--text-primary)',
-              fontSize: '0.95rem',
-              lineHeight: '1.6'
-            }}
-            className="book-synopsis-back"
-          >
-            <h4 style={{marginTop: 0, marginBottom: '0.5rem', color: 'var(--primary)'}}>Synopsis</h4>
-            {synopsis ? (
-              <div dangerouslySetInnerHTML={{ __html: synopsis }} />
-            ) : (
-              <p style={{ color: 'var(--text-secondary)' }}>No synopsis available.</p>
-            )}
-          </div>
-        ]}
-      </ReactCardFlip>
+      <NativeFlipCard isFlipped={isFlipped} front={frontContent} back={backContent} />
     </div>
   );
 };
