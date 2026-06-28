@@ -104,3 +104,35 @@ INSERT INTO book (title, author, genre, isbn, price, quantity) VALUES
 INSERT INTO users (username, password_hash, role) VALUES ('admin', '$2a$10$ICqpVhMHha4vInw3SjcRHOvY/Z5DTW1kY20kOdE9vyaWLKPpuDw.S', 'ADMIN');
 INSERT INTO users (username, password_hash, role) VALUES ('manager', '$2a$10$ICqpVhMHha4vInw3SjcRHOvY/Z5DTW1kY20kOdE9vyaWLKPpuDw.S', 'MANAGER');
 INSERT INTO users (username, password_hash, role) VALUES ('clerk', '$2a$10$ICqpVhMHha4vInw3SjcRHOvY/Z5DTW1kY20kOdE9vyaWLKPpuDw.S', 'CLERK');
+
+-- Suppliers
+INSERT INTO supplier (name, contact_person, email, phone) VALUES 
+('Penguin Classics', 'Allen Lane', 'contact@penguinclassics.com', '555-0101'),
+('HarperCollins', 'William Collins', 'sales@harpercollins.com', '555-0202'),
+('Vintage Books', 'Alfred Knopf', 'orders@vintagebooks.com', '555-0303'),
+('Bantam Spectra', 'Ian Ballantine', 'sci-fi@bantamspectra.com', '555-0404'),
+('Oxford University Press', 'John Fell', 'academic@oup.com', '555-0505');
+
+-- Sales Transactions
+INSERT INTO sales_transaction (transaction_date, total_amount) VALUES
+(DATE_SUB(NOW(), INTERVAL 5 DAY), 450.00),
+(DATE_SUB(NOW(), INTERVAL 4 DAY), 790.00),
+(DATE_SUB(NOW(), INTERVAL 3 DAY), 150.00),
+(DATE_SUB(NOW(), INTERVAL 2 DAY), 1010.00),
+(DATE_SUB(NOW(), INTERVAL 1 DAY), 1430.00);
+
+-- Sales Transaction Items
+INSERT INTO sales_transaction_item (transaction_id, book_id, quantity, unit_price) VALUES
+(1, 1, 1, 450.00),
+(2, 2, 2, 320.00),
+(2, 3, 1, 150.00),
+(3, 4, 1, 150.00),
+(4, 5, 3, 210.00),
+(4, 1, 1, 450.00),
+(5, 6, 1, 185.00),
+(5, 7, 2, 135.00),
+(5, 8, 1, 650.00);
+
+-- Update book quantities to trigger low stock alerts
+UPDATE book SET quantity = 2 WHERE id IN (10, 11, 12, 13);
+UPDATE book SET quantity = 0 WHERE id = 14;
