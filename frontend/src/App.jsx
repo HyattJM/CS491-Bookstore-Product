@@ -1,8 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import LockScreen from './components/LockScreen';
+import AnalyticsDashboard from './components/AnalyticsDashboard';
+import SupplierDashboard from './components/SupplierDashboard';
+import { CartProvider, useCart } from './context/CartContext';
+import CartDrawer from './components/CartDrawer';
+
+// Separate Navbar component so it can use CartContext
+const Navbar = ({ user, handleLogout }) => {
+  const { cartCount, setIsCartOpen } = useCart();
+  return (
+    <nav className="navbar">
+      <h1>Rare Finds BMS</h1>
+      <div>
+        <span style={{ marginRight: '1rem', color: 'var(--text-secondary)' }}>
+          Welcome, {user.username} ({user.role})
+        </span>
+        <Link to="/" className="btn" style={{ marginRight: '0.5rem', textDecoration: 'none', background: 'transparent', color: 'var(--text-primary)' }}>Inventory</Link>
+        {['ADMIN', 'MANAGER'].includes(user.role) && (
+          <>
+            <Link to="/analytics" className="btn" style={{ marginRight: '0.5rem', textDecoration: 'none', background: 'transparent', color: 'var(--text-primary)' }}>Analytics</Link>
+            <Link to="/suppliers" className="btn" style={{ marginRight: '0.5rem', textDecoration: 'none', background: 'transparent', color: 'var(--text-primary)' }}>Suppliers</Link>
+          </>
+        )}
+        <button className="btn" style={{ marginRight: '0.5rem' }} onClick={() => setIsCartOpen(true)}>
+          Cart ({cartCount})
+        </button>
+        <button className="btn btn-secondary" onClick={handleLogout}>Logout</button>
+      </div>
+    </nav>
+  );
+};
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -82,31 +112,32 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="app-container">
-        {user && (
-          <nav className="navbar">
-            <h1>Rare Finds BMS</h1>
-            <div>
-              <span style={{ marginRight: '1rem', color: 'var(--text-secondary)' }}>
-                Welcome, {user.username} ({user.role})
-              </span>
-              <button className="btn btn-secondary" onClick={handleLogout}>Logout</button>
-            </div>
-          </nav>
-        )}
-        <Routes>
-          <Route 
-            path="/login" 
-            element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/" />} 
-          />
-          <Route 
-            path="/" 
-            element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} 
-          />
-        </Routes>
-      </div>
-    </Router>
+    <CartProvider>
+      <Router>
+        <div className="app-container">
+          {user && <Navbar user={user} handleLogout={handleLogout} />}
+          <Routes>
+            <Route 
+              path="/login" 
+              element={!user ? <Login onLogin={handleLogin} /> : <Navigate to="/" />} 
+            />
+            <Route 
+              path="/" 
+              element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/analytics" 
+              element={user && ['ADMIN', 'MANAGER'].includes(user.role) ? <AnalyticsDashboard user={user} /> : <Navigate to="/" />} 
+            />
+            <Route 
+              path="/suppliers" 
+              element={user && ['ADMIN', 'MANAGER'].includes(user.role) ? <SupplierDashboard user={user} /> : <Navigate to="/" />} 
+            />
+          </Routes>
+          {user && <CartDrawer user={user} />}
+        </div>
+      </Router>
+    </CartProvider>
   );
 }
 
