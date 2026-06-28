@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const BookCover = ({ isbn, title }) => {
+const BookCover = ({ isbn, title, author }) => {
   const [coverUrl, setCoverUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -26,13 +26,15 @@ const BookCover = ({ isbn, title }) => {
       return;
     }
     
-    fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}`)
+    // Using iTunes API which is much more resilient to rate limits than Google Books
+    const term = encodeURIComponent(`${title} ${author}`);
+    fetch(`https://itunes.apple.com/search?term=${term}&media=ebook&limit=1`)
       .then(res => res.json())
       .then(data => {
         if (isMounted) {
-          if (data.items && data.items.length > 0 && data.items[0].volumeInfo.imageLinks) {
-            let url = data.items[0].volumeInfo.imageLinks.thumbnail;
-            if (url) url = url.replace('http:', 'https:').replace('&edge=curl', '');
+          if (data.results && data.results.length > 0 && data.results[0].artworkUrl100) {
+            // Apple provides 100x100 thumbnails, we can request a larger size by replacing the dimensions in the URL
+            let url = data.results[0].artworkUrl100.replace('100x100bb', '400x400bb');
             setCoverUrl(url);
           }
           setLoading(false);
@@ -43,7 +45,7 @@ const BookCover = ({ isbn, title }) => {
       });
       
     return () => { isMounted = false; };
-  }, [title, isVisible]);
+  }, [title, author, isVisible]);
 
   const fallbackSvg = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="280" height="400"><rect width="280" height="400" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#f8fafc">No Cover</text></svg>`)}`;
 
@@ -56,7 +58,7 @@ const BookCover = ({ isbn, title }) => {
           src={coverUrl || fallbackSvg} 
           alt={title} 
           className="book-cover"
-          style={{ flex: 1 }}
+          style={{ flex: 1, objectFit: 'cover' }}
         />
       )}
     </div>
@@ -379,7 +381,7 @@ const Dashboard = ({ user }) => {
       <div className="books-grid">
         {books.map(book => (
           <div key={book.id} className="book-card">
-            <BookCover isbn={book.isbn} title={book.title} />
+            <BookCover isbn={book.isbn} title={book.title} author={book.author} />
             <div className="book-info">
               <div className="book-title">{book.title}</div>
               <div className="book-author">by {book.author}</div>
