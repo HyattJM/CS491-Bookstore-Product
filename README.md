@@ -84,3 +84,23 @@ You can then log in using any of the test users:
 - `admin` / `password`
 - `manager` / `password`
 - `clerk` / `password`
+
+---
+
+## Sprint 2 Week 1 Completion: UI Enhancements & External APIs
+
+We have significantly improved the user experience in the Inventory Dashboard by adding high-quality visual elements and interactive features to our book listings.
+
+### New Features & Improvements
+* **Real Book Covers via API Integration:**
+  * Replaced mock placeholder images by integrating with the **Apple iTunes Books API**.
+  * Dynamic, on-the-fly fetching of real, high-resolution book covers based on Book Title and Author.
+  * *Note:* Switched from Google Books API to Apple iTunes API to gracefully handle strict rate-limiting and unreliable ISBN cover lookups.
+* **Interactive Flip Card UI:**
+  * Added a sleek `NativeFlipCard` implementation that seamlessly rotates the book cover 180 degrees horizontally on mouse hover.
+  * The back of the card displays a scrollable, dynamically fetched **Book Synopsis**.
+  * The flip animation runs flawlessly using modern CSS 3D transforms (`preserve-3d`, `rotateY`, `cubic-bezier` timing function), fully compatible with the new React 19 / Vite environment without relying on deprecated third-party libraries.
+* **Layout & Polish:**
+  * Embedded a beautifully matching dynamic SVG fallback (`No Cover`) for books missing artwork.
+  * Fixed image cropping issues by implementing `object-fit: contain` accompanied by a blended dark-mode navy background (`#0f172a`), preserving the original aspect ratio of all covers.
+  * Implemented an `IntersectionObserver` to lazy-load cover images only when scrolled into view, preventing API throttling.
