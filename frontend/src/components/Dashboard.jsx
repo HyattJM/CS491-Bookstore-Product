@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const BookCover = ({ isbn, title, author }) => {
   const [coverUrl, setCoverUrl] = useState(null);
+  const [synopsis, setSynopsis] = useState("");
   const [loading, setLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const coverRef = React.useRef();
@@ -32,10 +33,15 @@ const BookCover = ({ isbn, title, author }) => {
       .then(res => res.json())
       .then(data => {
         if (isMounted) {
-          if (data.results && data.results.length > 0 && data.results[0].artworkUrl100) {
-            // Apple provides 100x100 thumbnails, we can request a larger size by replacing the dimensions in the URL
-            let url = data.results[0].artworkUrl100.replace('100x100bb', '400x400bb');
-            setCoverUrl(url);
+          if (data.results && data.results.length > 0) {
+            if (data.results[0].artworkUrl100) {
+              // Apple provides 100x100 thumbnails, we can request a larger size by replacing the dimensions in the URL
+              let url = data.results[0].artworkUrl100.replace('100x100bb', '400x400bb');
+              setCoverUrl(url);
+            }
+            if (data.results[0].description) {
+              setSynopsis(data.results[0].description);
+            }
           }
           setLoading(false);
         }
@@ -50,17 +56,29 @@ const BookCover = ({ isbn, title, author }) => {
   const fallbackSvg = `data:image/svg+xml;base64,${btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="280" height="400"><rect width="280" height="400" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="#f8fafc">No Cover</text></svg>`)}`;
 
   return (
-    <div ref={coverRef} style={{ minHeight: '400px', width: '100%', display: 'flex' }}>
-      {loading ? (
-        <div className="book-cover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface-hover)', flex: 1 }}>Loading...</div>
-      ) : (
-        <img 
-          src={coverUrl || fallbackSvg} 
-          alt={title} 
-          className="book-cover"
-          style={{ flex: 1, objectFit: 'cover' }}
-        />
-      )}
+    <div ref={coverRef} className="flip-card">
+      <div className="flip-card-inner">
+        <div className="flip-card-front">
+          {loading ? (
+            <div className="book-cover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--surface-hover)', flex: 1, height: '100%' }}>Loading...</div>
+          ) : (
+            <img 
+              src={coverUrl || fallbackSvg} 
+              alt={title} 
+              className="book-cover"
+              style={{ flex: 1, objectFit: 'cover', height: '100%' }}
+            />
+          )}
+        </div>
+        <div className="flip-card-back">
+          <h4 style={{marginTop: 0, marginBottom: '0.5rem', color: 'var(--primary)'}}>Synopsis</h4>
+          {synopsis ? (
+            <div dangerouslySetInnerHTML={{ __html: synopsis }} />
+          ) : (
+            <p style={{ color: 'var(--text-secondary)' }}>No synopsis available.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
