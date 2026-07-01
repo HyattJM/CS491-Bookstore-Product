@@ -113,13 +113,32 @@ INSERT INTO supplier (name, contact_person, email, phone) VALUES
 ('Bantam Spectra', 'Ian Ballantine', 'sci-fi@bantamspectra.com', '555-0404'),
 ('Oxford University Press', 'John Fell', 'academic@oup.com', '555-0505');
 
+-- Ensure tables exist before inserting mock data since data.sql runs before Hibernate
+CREATE TABLE IF NOT EXISTS sales_transaction (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    total_amount DECIMAL(38,2) NOT NULL,
+    transaction_date DATETIME(6) NOT NULL,
+    user_id BIGINT,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_sales_user FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS sales_transaction_item (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    quantity INTEGER NOT NULL,
+    unit_price DECIMAL(38,2) NOT NULL,
+    book_id BIGINT NOT NULL,
+    transaction_id BIGINT NOT NULL,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB;
+
 -- Sales Transactions
-INSERT INTO sales_transaction (transaction_date, total_amount) VALUES
-(DATE_SUB(NOW(), INTERVAL 5 DAY), 450.00),
-(DATE_SUB(NOW(), INTERVAL 4 DAY), 790.00),
-(DATE_SUB(NOW(), INTERVAL 3 DAY), 150.00),
-(DATE_SUB(NOW(), INTERVAL 2 DAY), 1010.00),
-(DATE_SUB(NOW(), INTERVAL 1 DAY), 1430.00);
+INSERT INTO sales_transaction (transaction_date, total_amount, user_id) VALUES
+(DATE_SUB(NOW(), INTERVAL 5 DAY), 450.00, 1),
+(DATE_SUB(NOW(), INTERVAL 4 DAY), 790.00, 2),
+(DATE_SUB(NOW(), INTERVAL 3 DAY), 150.00, 1),
+(DATE_SUB(NOW(), INTERVAL 2 DAY), 1010.00, 3),
+(DATE_SUB(NOW(), INTERVAL 1 DAY), 1430.00, 1);
 
 -- Sales Transaction Items
 INSERT INTO sales_transaction_item (transaction_id, book_id, quantity, unit_price) VALUES

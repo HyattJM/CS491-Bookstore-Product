@@ -19,13 +19,14 @@ public class SalesService {
     private final BookRepository bookRepository;
 
     @Transactional
-    public SalesTransaction processSale(SalesRequest request) {
+    public SalesTransaction processSale(SalesRequest request, com.rarefinds.bms.security.User user) {
         if (request == null || request.getItems() == null || request.getItems().isEmpty()) {
             throw new IllegalArgumentException("Sales request cannot be empty");
         }
 
         SalesTransaction transaction = new SalesTransaction();
         transaction.setTransactionDate(LocalDateTime.now());
+        transaction.setUser(user);
         
         BigDecimal totalAmount = BigDecimal.ZERO;
 

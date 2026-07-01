@@ -14,10 +14,15 @@ public class SalesController {
 
     private final SalesService salesService;
     private final SalesTransactionRepository salesTransactionRepository;
+    private final com.rarefinds.bms.security.UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<SalesTransaction> createSale(@RequestBody SalesRequest request) {
-        SalesTransaction transaction = salesService.processSale(request);
+    public ResponseEntity<SalesTransaction> createSale(java.security.Principal principal, @RequestBody SalesRequest request) {
+        com.rarefinds.bms.security.User user = null;
+        if (principal != null) {
+            user = userRepository.findByUsername(principal.getName()).orElse(null);
+        }
+        SalesTransaction transaction = salesService.processSale(request, user);
         return new ResponseEntity<>(transaction, HttpStatus.CREATED);
     }
 

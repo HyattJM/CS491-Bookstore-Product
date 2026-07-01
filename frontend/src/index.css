@@ -58,6 +58,8 @@ body {
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+  font-family: inherit;
+  font-size: 1rem;
   transition: all 0.2s;
 }
 
@@ -74,11 +76,59 @@ body {
   background-color: #dc2626;
 }
 
+.dropdown {
+  display: inline-block;
+  position: relative;
+  margin-right: 0.5rem;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--surface);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 10;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.dropdown-content a {
+  color: var(--text-color);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--bg-color);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  background-image: url('/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  z-index: 0;
 }
 
 .login-card {
@@ -89,6 +139,7 @@ body {
   width: 100%;
   max-width: 400px;
   border: 1px solid var(--border-color);
+  z-index: 1;
 }
 
 .login-card h2 {

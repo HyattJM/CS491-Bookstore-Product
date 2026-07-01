@@ -3,6 +3,7 @@ package com.rarefinds.bms.analytics;
 import com.rarefinds.bms.inventory.Book;
 import com.rarefinds.bms.inventory.BookRepository;
 import com.rarefinds.bms.sales.SalesTransaction;
+import com.rarefinds.bms.sales.SalesTransactionItem;
 import com.rarefinds.bms.sales.SalesTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,6 @@ public class AnalyticsService {
                 .collect(Collectors.toList());
         data.put("lowStockItems", lowStock);
 
-        // Recent Transactions
         List<Map<String, Object>> recentTransactions = allTransactions.stream()
                 .sorted((t1, t2) -> t2.getTransactionDate().compareTo(t1.getTransactionDate()))
                 .limit(5)
@@ -67,6 +67,35 @@ public class AnalyticsService {
                 })
                 .collect(Collectors.toList());
         data.put("recentTransactions", recentTransactions);
+
+        List<Map<String, Object>> detailedTransactions = allTransactions.stream()
+                .sorted((t1, t2) -> t2.getTransactionDate().compareTo(t1.getTransactionDate()))
+                .map(t -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", t.getId());
+                    map.put("date", t.getTransactionDate());
+                    
+                    if (t.getUser() != null) {
+                        map.put("user", t.getUser().getUsername());
+                        map.put("role", t.getUser().getRole());
+                    } else {
+                        map.put("user", "System");
+                        map.put("role", "N/A");
+                    }
+                    
+                    String books = t.getItems().stream()
+                            .map(item -> item.getBook().getTitle())
+                            .collect(Collectors.joining(", "));
+                    map.put("books", books);
+                    
+                    int totalQty = t.getItems().stream().mapToInt(SalesTransactionItem::getQuantity).sum();
+                    map.put("quantity", totalQty);
+                    
+                    map.put("totalAmount", t.getTotalAmount());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        data.put("detailedTransactions", detailedTransactions);
 
         return data;
     }

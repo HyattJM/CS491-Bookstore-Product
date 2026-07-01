@@ -223,3 +223,20 @@ We have successfully completed all major Epics for Sprint 2!
 * **Entity & API:** Built out the full backend CRUD capability with a `Supplier` entity, Repository, and Controller for managing vendor relationships.
 * **Supplier UI:** Added a comprehensive `SupplierDashboard.jsx` allowing Managers and Admins to view supplier contact info, create new suppliers, and quickly edit existing ones.
 * **One-Click Restocking:** Implemented a direct "Restock Inventory" workflow directly on the Supplier Dashboard. Admins can select any book and quickly append to its stock, immediately saving the changes to the database.
+
+---
+
+## Add Ons: Admin Tools Suite & Advanced Analytics
+
+We expanded the BMS platform with administrative and analytical tools to give store operators full control over the application's ecosystem.
+
+### 🛠️ Admin Tools Suite
+* **User Management:** Comprehensive user dashboard where Admins can view all accounts, create new users, reassign roles, and reset passwords. Built with safety checks to prevent deletion or demotion of the final `ADMIN` account.
+* **System Activity Logs:** Backend tracking system that automatically logs system events (user creation/deletion, database exports). Paired with a read-only `SystemLogs` dashboard to view the last 100 events.
+* **Database Exports:** Added a `DatabaseExport` interface enabling Admins to instantly download raw CSV exports of the Inventory and Sales databases.
+* **Store Settings:** Built a global key-value configuration table in the database and a dynamic `StoreSettings` UI for modifying global system properties on the fly.
+* **Security & Navigation:** All tools are securely locked behind the `ADMIN` role. A unified "Tools" navigation dropdown provides easy access, hiding itself completely from unauthorized roles (Managers/Clerks).
+
+### 📊 Advanced Analytics: Sales History
+* **User-Tracked Sales:** Modified backend schemas to track the employee (`User`) who processes each sale.
+* **Recent Sales History Table:** Added a detailed ledger to the Analytics Dashboard displaying Timestamp, User, Role (`ADMIN`, `MANAGER`, `CLERK`), Books Sold, Quantity, and Total Sale Amount for every transaction.

@@ -5,6 +5,10 @@ import Dashboard from './components/Dashboard';
 import LockScreen from './components/LockScreen';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import SupplierDashboard from './components/SupplierDashboard';
+import UserManagement from './components/UserManagement';
+import SystemLogs from './components/SystemLogs';
+import DatabaseExport from './components/DatabaseExport';
+import StoreSettings from './components/StoreSettings';
 import { CartProvider, useCart } from './context/CartContext';
 import CartDrawer from './components/CartDrawer';
 
@@ -24,6 +28,17 @@ const Navbar = ({ user, handleLogout }) => {
             <Link to="/analytics" className="btn" style={{ marginRight: '0.5rem', textDecoration: 'none', background: 'transparent', color: 'var(--text-primary)' }}>Analytics</Link>
             <Link to="/suppliers" className="btn" style={{ marginRight: '0.5rem', textDecoration: 'none', background: 'transparent', color: 'var(--text-primary)' }}>Suppliers</Link>
           </>
+        )}
+        {user.role === 'ADMIN' && (
+          <div className="dropdown">
+            <button className="btn" style={{ textDecoration: 'none', background: 'transparent', color: 'var(--text-primary)' }}>Tools ▾</button>
+            <div className="dropdown-content">
+              <Link to="/tools/users">User Management</Link>
+              <Link to="/tools/logs">System Logs</Link>
+              <Link to="/tools/export">Database Export</Link>
+              <Link to="/tools/settings">Store Settings</Link>
+            </div>
+          </div>
         )}
         <button className="btn" style={{ marginRight: '0.5rem' }} onClick={() => setIsCartOpen(true)}>
           Cart ({cartCount})
@@ -132,6 +147,22 @@ function App() {
             <Route 
               path="/suppliers" 
               element={user && ['ADMIN', 'MANAGER'].includes(user.role) ? <SupplierDashboard user={user} /> : <Navigate to="/" />} 
+            />
+            <Route 
+              path="/tools/users" 
+              element={user && user.role === 'ADMIN' ? <UserManagement basicAuth={user.basicAuth} /> : <Navigate to="/" />} 
+            />
+            <Route 
+              path="/tools/logs" 
+              element={user && user.role === 'ADMIN' ? <SystemLogs basicAuth={user.basicAuth} /> : <Navigate to="/" />} 
+            />
+            <Route 
+              path="/tools/export" 
+              element={user && user.role === 'ADMIN' ? <DatabaseExport basicAuth={user.basicAuth} /> : <Navigate to="/" />} 
+            />
+            <Route 
+              path="/tools/settings" 
+              element={user && user.role === 'ADMIN' ? <StoreSettings basicAuth={user.basicAuth} /> : <Navigate to="/" />} 
             />
           </Routes>
           {user && <CartDrawer user={user} />}

@@ -105,6 +105,43 @@ const AnalyticsDashboard = ({ user }) => {
         </div>
 
       </div>
+
+      {/* Detailed Transactions Table */}
+      <div style={{ backgroundColor: 'var(--surface)', padding: '1.5rem', borderRadius: '8px', marginTop: '2rem' }}>
+        <h3 style={{ marginTop: 0, marginBottom: '1.5rem' }}>Recent Sales History</h3>
+        {data?.detailedTransactions?.length === 0 ? (
+          <p style={{ color: 'var(--text-secondary)' }}>No recent transactions.</p>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Sale ID</th>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Books</th>
+                  <th>Qty</th>
+                  <th>Total Sale</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.detailedTransactions?.map(tx => (
+                  <tr key={tx.id}>
+                    <td>#{tx.id}</td>
+                    <td>{new Date(tx.date).toLocaleString()}</td>
+                    <td>{tx.user}</td>
+                    <td>{tx.role}</td>
+                    <td>{tx.books}</td>
+                    <td>{tx.quantity}</td>
+                    <td style={{ fontWeight: 'bold', color: 'var(--primary)' }}>${tx.totalAmount.toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
