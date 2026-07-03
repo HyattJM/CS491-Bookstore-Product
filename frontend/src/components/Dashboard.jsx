@@ -255,6 +255,23 @@ const Dashboard = ({ user }) => {
     }, 0);
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this book?")) return;
+    try {
+      const response = await fetch(`http://localhost:8082/api/books/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Basic ${user.basicAuth}` }
+      });
+      if (response.ok) {
+        fetchBooks();
+      } else {
+        alert("Failed to delete book");
+      }
+    } catch (err) {
+      alert("Error connecting to server");
+    }
+  };
+
   const fetchBooks = async (explicitQuery = searchQuery) => {
     try {
       setLoading(true);
@@ -414,7 +431,7 @@ const Dashboard = ({ user }) => {
                 <button className="btn btn-secondary" onClick={() => openEditModal(book)}>Edit</button>
               )}
               {['ADMIN'].includes(user.role) && (
-                <button className="btn btn-danger">Delete</button>
+                <button className="btn btn-danger" onClick={() => handleDelete(book.id)}>Delete</button>
               )}
             </div>
           </div>
