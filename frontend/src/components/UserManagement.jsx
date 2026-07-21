@@ -14,7 +14,7 @@ const UserManagement = ({ basicAuth }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:8082/api/users', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/users', {
         headers: { 'Authorization': `Basic ${basicAuth}` }
       });
       if (response.ok) {
@@ -30,7 +30,7 @@ const UserManagement = ({ basicAuth }) => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      const response = await fetch(`http://localhost:8082/api/users/${id}`, {
+      const response = await fetch(`https://rarefinds-backend-api-production.up.railway.app/api/users/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Basic ${basicAuth}` }
       });
@@ -47,7 +47,7 @@ const UserManagement = ({ basicAuth }) => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const url = editingUser ? `http://localhost:8082/api/users/${editingUser.id}` : 'http://localhost:8082/api/users';
+    const url = editingUser ? `https://rarefinds-backend-api-production.up.railway.app/api/users/${editingUser.id}` : 'https://rarefinds-backend-api-production.up.railway.app/api/users';
     const method = editingUser ? 'PUT' : 'POST';
     
     // For update, we only send fields if they are updated

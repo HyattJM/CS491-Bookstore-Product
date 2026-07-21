@@ -4,7 +4,7 @@ const DatabaseExport = ({ basicAuth }) => {
 
   const handleExport = async (type) => {
     try {
-      const response = await fetch(`http://localhost:8082/api/export/${type}`, {
+      const response = await fetch(`https://rarefinds-backend-api-production.up.railway.app/api/export/${type}`, {
         headers: { 'Authorization': `Basic ${basicAuth}` }
       });
       if (response.ok) {

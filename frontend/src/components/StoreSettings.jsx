@@ -13,7 +13,7 @@ const StoreSettings = ({ basicAuth }) => {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('http://localhost:8082/api/settings', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/settings', {
         headers: { 'Authorization': `Basic ${basicAuth}` }
       });
       if (response.ok) {
@@ -29,7 +29,7 @@ const StoreSettings = ({ basicAuth }) => {
   const handleSave = async (e, key, value) => {
     if (e) e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8082/api/settings', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/settings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

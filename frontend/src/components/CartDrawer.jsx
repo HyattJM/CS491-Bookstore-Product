@@ -19,7 +19,7 @@ const CartDrawer = ({ user }) => {
         }))
       };
 
-      const response = await fetch('http://localhost:8082/api/sales', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/sales', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

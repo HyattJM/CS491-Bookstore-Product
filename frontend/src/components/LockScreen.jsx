@@ -11,7 +11,7 @@ const LockScreen = ({ user, onUnlock, onLogout }) => {
     try {
       const encodedCredentials = btoa(`${user.username}:${password}`);
       
-      const response = await fetch('http://localhost:8082/api/auth/login', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

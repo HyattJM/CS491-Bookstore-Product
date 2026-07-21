@@ -183,7 +183,7 @@ const Dashboard = ({ user }) => {
     e.preventDefault();
     try {
       const isEdit = !!editingBook;
-      const endpoint = isEdit ? `http://localhost:8082/api/books/${editingBook.id}` : 'http://localhost:8082/api/books';
+      const endpoint = isEdit ? `https://rarefinds-backend-api-production.up.railway.app/api/books/${editingBook.id}` : 'https://rarefinds-backend-api-production.up.railway.app/api/books';
       const method = isEdit ? 'PUT' : 'POST';
       
       const response = await fetch(endpoint, {
@@ -227,7 +227,7 @@ const Dashboard = ({ user }) => {
 
   const fetchSuggestions = async () => {
     try {
-      const url = new URL('http://localhost:8082/api/books');
+      const url = new URL('https://rarefinds-backend-api-production.up.railway.app/api/books');
       url.searchParams.append('query', searchQuery);
       url.searchParams.append('filterBy', filterBy);
       
@@ -258,7 +258,7 @@ const Dashboard = ({ user }) => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this book?")) return;
     try {
-      const response = await fetch(`http://localhost:8082/api/books/${id}`, {
+      const response = await fetch(`https://rarefinds-backend-api-production.up.railway.app/api/books/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Basic ${user.basicAuth}` }
       });
@@ -275,7 +275,7 @@ const Dashboard = ({ user }) => {
   const fetchBooks = async (explicitQuery = searchQuery) => {
     try {
       setLoading(true);
-      const url = new URL('http://localhost:8082/api/books');
+      const url = new URL('https://rarefinds-backend-api-production.up.railway.app/api/books');
       if (explicitQuery) {
         url.searchParams.append('query', explicitQuery);
         url.searchParams.append('filterBy', filterBy);

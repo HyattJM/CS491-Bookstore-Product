@@ -11,7 +11,7 @@ const Login = ({ onLogin }) => {
       // Create Base64 encoded auth header
       const encodedCredentials = btoa(`${username}:${password}`);
       
-      const response = await fetch('http://localhost:8082/api/auth/login', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,6 +56,20 @@ const Login = ({ onLogin }) => {
           />
         </div>
         <h2>Sign In</h2>
+        <div style={{
+          backgroundColor: 'var(--bg-card-hover)',
+          border: '1px solid var(--border-color)',
+          borderRadius: '4px',
+          padding: '0.75rem',
+          marginBottom: '1rem',
+          fontSize: '0.85rem',
+          color: 'var(--text-secondary)',
+          textAlign: 'center'
+        }}>
+          <strong>Demo Access:</strong><br/>
+          Username: <code>admin</code><br/>
+          Password: <code>password</code>
+        </div>
         {error && <div style={{ color: 'var(--danger)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">

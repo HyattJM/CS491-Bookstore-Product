@@ -10,7 +10,7 @@ const SystemLogs = ({ basicAuth }) => {
 
   const fetchLogs = async () => {
     try {
-      const response = await fetch('http://localhost:8082/api/logs', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/logs', {
         headers: { 'Authorization': `Basic ${basicAuth}` }
       });
       if (response.ok) {

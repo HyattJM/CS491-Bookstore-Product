@@ -15,7 +15,7 @@ const AnalyticsDashboard = ({ user }) => {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch('http://localhost:8082/api/analytics/dashboard', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/analytics/dashboard', {
         headers: { 'Authorization': `Basic ${user.basicAuth}` }
       });
       if (response.ok) {

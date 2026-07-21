@@ -19,7 +19,7 @@ const SupplierDashboard = ({ user }) => {
 
   const fetchSuppliers = async () => {
     try {
-      const response = await fetch('http://localhost:8082/api/suppliers', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/suppliers', {
         headers: { 'Authorization': `Basic ${user.basicAuth}` }
       });
       if (response.ok) {
@@ -32,7 +32,7 @@ const SupplierDashboard = ({ user }) => {
 
   const fetchBooks = async () => {
     try {
-      const response = await fetch('http://localhost:8082/api/books', {
+      const response = await fetch('https://rarefinds-backend-api-production.up.railway.app/api/books', {
         headers: { 'Authorization': `Basic ${user.basicAuth}` }
       });
       if (response.ok) {
@@ -48,7 +48,7 @@ const SupplierDashboard = ({ user }) => {
   const handleSaveSupplier = async (e) => {
     e.preventDefault();
     const isEdit = !!supplierFormData.id;
-    const url = isEdit ? `http://localhost:8082/api/suppliers/${supplierFormData.id}` : 'http://localhost:8082/api/suppliers';
+    const url = isEdit ? `https://rarefinds-backend-api-production.up.railway.app/api/suppliers/${supplierFormData.id}` : 'https://rarefinds-backend-api-production.up.railway.app/api/suppliers';
     const method = isEdit ? 'PUT' : 'POST';
 
     try {
@@ -78,7 +78,7 @@ const SupplierDashboard = ({ user }) => {
     if (!book) return;
 
     try {
-      const response = await fetch(`http://localhost:8082/api/books/${book.id}`, {
+      const response = await fetch(`https://rarefinds-backend-api-production.up.railway.app/api/books/${book.id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Basic ${user.basicAuth}`,
